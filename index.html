@@ -708,6 +708,65 @@
   </div>
 </div>
 
+
+
+  <!-- ── SLIDE 18: WEB CHECKLIST ── -->
+<div class="slide" id="s18">
+  <div class="scroll-content">
+    <div class="section-tag" style="color:var(--cyan);background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);">WEB · CHECKLIST</div>
+    <div class="slide-title neon-cyan" style="font-size:clamp(18px,3vw,34px);">Web CTF Quick Checklist</div>
+    <div class="divider"></div>
+    <div class="grid-2">
+      <div class="card cyan">
+        <h3 style="color:var(--cyan);">🔍 Recon</h3>
+        <ul>
+          <li>☐ Check robots.txt, sitemap.xml</li>
+          <li>☐ Scan /.git, /.env, /backup, /.DS_Store</li>
+          <li>☐ Run ffuf/gobuster on all dirs</li>
+          <li>☐ View page source + all JS files</li>
+          <li>☐ Check all HTTP headers (Server, X-*, Set-Cookie)</li>
+          <li>☐ Inspect all cookies (base64?, JWT?)</li>
+          <li>☐ Check network tab for hidden APIs</li>
+        </ul>
+      </div>
+      <div class="card green">
+        <h3 style="color:var(--green);">💉 Injection Testing</h3>
+        <ul>
+          <li>☐ Single quote <code>'</code> in every param</li>
+          <li>☐ XSS payload in every input field</li>
+          <li>☐ SSTI: <code>{{7*7}}</code> → 49? Jinja2/Twig/Pebble</li>
+          <li>☐ Path traversal: <code>../../../etc/passwd</code></li>
+          <li>☐ Command injection: <code>;id</code></li>
+          <li>☐ XXE if XML input exists</li>
+          <li>☐ HTTP header injection</li>
+        </ul>
+      </div>
+      <div class="card purple">
+        <h3 style="color:var(--purple);">🔐 Auth / Session</h3>
+        <ul>
+          <li>☐ Try admin/admin, admin/password, guest/guest</li>
+          <li>☐ Decode JWT at jwt.io → tamper payload</li>
+          <li>☐ Test alg:none JWT bypass</li>
+          <li>☐ IDOR: change user ID in requests</li>
+          <li>☐ Test account enumeration via different errors</li>
+          <li>☐ Check password reset token predictability</li>
+        </ul>
+      </div>
+      <div class="card orange">
+        <h3 style="color:var(--orange);">🚩 Flag Locations</h3>
+        <ul>
+          <li>☐ /flag, /flag.txt, /etc/flag</li>
+          <li>☐ Database table named "flag" or "secret"</li>
+          <li>☐ HTTP response headers</li>
+          <li>☐ HTML source comments</li>
+          <li>☐ Admin panel after login bypass</li>
+          <li>☐ Env variables via RCE: env | grep FLAG</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── SLIDE 5: SQL INJECTION ── -->
 <div class="slide" id="s5">
   <div class="scroll-content">
@@ -1182,6 +1241,63 @@
   </div>
 </div>
 
+
+
+  
+<!-- ── SLIDE 19: BLOCKCHAIN CHECKLIST ── -->
+<div class="slide" id="s19">
+  <div class="scroll-content">
+    <div class="section-tag" style="color:var(--purple);background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);">BLOCKCHAIN · CHECKLIST</div>
+    <div class="slide-title neon-purple" style="font-size:clamp(18px,3vw,34px);">Blockchain CTF Quick Checklist</div>
+    <div class="divider"></div>
+    <div class="grid-2">
+      <div class="card purple">
+        <h3 style="color:var(--purple);">📄 Source Analysis</h3>
+        <ul>
+          <li>☐ pragma solidity version → &lt;0.8? overflow possible</li>
+          <li>☐ Identify win condition (isSolved, owner check)</li>
+          <li>☐ List all public/external functions</li>
+          <li>☐ Find all ETH transfers (.call, .send, .transfer)</li>
+          <li>☐ Spot all storage reads that should be private</li>
+          <li>☐ Find all delegatecall / call usage</li>
+          <li>☐ Check modifiers carefully</li>
+        </ul>
+      </div>
+      <div class="card green">
+        <h3 style="color:var(--green);">🔑 Common Patterns</h3>
+        <ul>
+          <li>☐ Reentrancy: sends ETH before balance update?</li>
+          <li>☐ Integer overflow: pragma &lt;0.8 with no SafeMath?</li>
+          <li>☐ Access control: missing onlyOwner / unlocked initializer?</li>
+          <li>☐ Flash loan: spot-price oracle manipulable?</li>
+          <li>☐ Single-block governance vote bypass?</li>
+          <li>☐ Unchecked external call return value?</li>
+        </ul>
+      </div>
+      <div class="card cyan">
+        <h3 style="color:var(--cyan);">🛠️ On-chain Recon</h3>
+        <ul>
+          <li>☐ Read all storage slots: cast storage addr 0..10</li>
+          <li>☐ Check tx history on Etherscan</li>
+          <li>☐ Decode all input data of past txs</li>
+          <li>☐ Run slither for automated detection</li>
+          <li>☐ Check contract ETH balance</li>
+        </ul>
+      </div>
+      <div class="card orange">
+        <h3 style="color:var(--orange);">⚡ Execution</h3>
+        <ul>
+          <li>☐ Fork mainnet/testnet with anvil --fork-url</li>
+          <li>☐ Write &amp; test attack in forge test</li>
+          <li>☐ Verify isSolved() = true locally first</li>
+          <li>☐ Deploy to testnet, execute, verify</li>
+          <li>☐ Submit transaction hash / greet challenge</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── SLIDE 12: REENTRANCY ── -->
 <div class="slide" id="s12">
   <div class="scroll-content">
@@ -1550,116 +1666,8 @@
   </div>
 </div>
 
-<!-- ── SLIDE 18: WEB CHECKLIST ── -->
-<div class="slide" id="s18">
-  <div class="scroll-content">
-    <div class="section-tag" style="color:var(--cyan);background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);">WEB · CHECKLIST</div>
-    <div class="slide-title neon-cyan" style="font-size:clamp(18px,3vw,34px);">Web CTF Quick Checklist</div>
-    <div class="divider"></div>
-    <div class="grid-2">
-      <div class="card cyan">
-        <h3 style="color:var(--cyan);">🔍 Recon</h3>
-        <ul>
-          <li>☐ Check robots.txt, sitemap.xml</li>
-          <li>☐ Scan /.git, /.env, /backup, /.DS_Store</li>
-          <li>☐ Run ffuf/gobuster on all dirs</li>
-          <li>☐ View page source + all JS files</li>
-          <li>☐ Check all HTTP headers (Server, X-*, Set-Cookie)</li>
-          <li>☐ Inspect all cookies (base64?, JWT?)</li>
-          <li>☐ Check network tab for hidden APIs</li>
-        </ul>
-      </div>
-      <div class="card green">
-        <h3 style="color:var(--green);">💉 Injection Testing</h3>
-        <ul>
-          <li>☐ Single quote <code>'</code> in every param</li>
-          <li>☐ XSS payload in every input field</li>
-          <li>☐ SSTI: <code>{{7*7}}</code> → 49? Jinja2/Twig/Pebble</li>
-          <li>☐ Path traversal: <code>../../../etc/passwd</code></li>
-          <li>☐ Command injection: <code>;id</code></li>
-          <li>☐ XXE if XML input exists</li>
-          <li>☐ HTTP header injection</li>
-        </ul>
-      </div>
-      <div class="card purple">
-        <h3 style="color:var(--purple);">🔐 Auth / Session</h3>
-        <ul>
-          <li>☐ Try admin/admin, admin/password, guest/guest</li>
-          <li>☐ Decode JWT at jwt.io → tamper payload</li>
-          <li>☐ Test alg:none JWT bypass</li>
-          <li>☐ IDOR: change user ID in requests</li>
-          <li>☐ Test account enumeration via different errors</li>
-          <li>☐ Check password reset token predictability</li>
-        </ul>
-      </div>
-      <div class="card orange">
-        <h3 style="color:var(--orange);">🚩 Flag Locations</h3>
-        <ul>
-          <li>☐ /flag, /flag.txt, /etc/flag</li>
-          <li>☐ Database table named "flag" or "secret"</li>
-          <li>☐ HTTP response headers</li>
-          <li>☐ HTML source comments</li>
-          <li>☐ Admin panel after login bypass</li>
-          <li>☐ Env variables via RCE: env | grep FLAG</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- ── SLIDE 19: BLOCKCHAIN CHECKLIST ── -->
-<div class="slide" id="s19">
-  <div class="scroll-content">
-    <div class="section-tag" style="color:var(--purple);background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);">BLOCKCHAIN · CHECKLIST</div>
-    <div class="slide-title neon-purple" style="font-size:clamp(18px,3vw,34px);">Blockchain CTF Quick Checklist</div>
-    <div class="divider"></div>
-    <div class="grid-2">
-      <div class="card purple">
-        <h3 style="color:var(--purple);">📄 Source Analysis</h3>
-        <ul>
-          <li>☐ pragma solidity version → &lt;0.8? overflow possible</li>
-          <li>☐ Identify win condition (isSolved, owner check)</li>
-          <li>☐ List all public/external functions</li>
-          <li>☐ Find all ETH transfers (.call, .send, .transfer)</li>
-          <li>☐ Spot all storage reads that should be private</li>
-          <li>☐ Find all delegatecall / call usage</li>
-          <li>☐ Check modifiers carefully</li>
-        </ul>
-      </div>
-      <div class="card green">
-        <h3 style="color:var(--green);">🔑 Common Patterns</h3>
-        <ul>
-          <li>☐ Reentrancy: sends ETH before balance update?</li>
-          <li>☐ Integer overflow: pragma &lt;0.8 with no SafeMath?</li>
-          <li>☐ Access control: missing onlyOwner / unlocked initializer?</li>
-          <li>☐ Flash loan: spot-price oracle manipulable?</li>
-          <li>☐ Single-block governance vote bypass?</li>
-          <li>☐ Unchecked external call return value?</li>
-        </ul>
-      </div>
-      <div class="card cyan">
-        <h3 style="color:var(--cyan);">🛠️ On-chain Recon</h3>
-        <ul>
-          <li>☐ Read all storage slots: cast storage addr 0..10</li>
-          <li>☐ Check tx history on Etherscan</li>
-          <li>☐ Decode all input data of past txs</li>
-          <li>☐ Run slither for automated detection</li>
-          <li>☐ Check contract ETH balance</li>
-        </ul>
-      </div>
-      <div class="card orange">
-        <h3 style="color:var(--orange);">⚡ Execution</h3>
-        <ul>
-          <li>☐ Fork mainnet/testnet with anvil --fork-url</li>
-          <li>☐ Write &amp; test attack in forge test</li>
-          <li>☐ Verify isSolved() = true locally first</li>
-          <li>☐ Deploy to testnet, execute, verify</li>
-          <li>☐ Submit transaction hash / greet challenge</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <!-- ── SLIDE 20: PRACTICE PLATFORMS ── -->
 <div class="slide" id="s20">
