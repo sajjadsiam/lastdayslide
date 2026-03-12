@@ -59,12 +59,14 @@
     display: none;
     width: 100%;
     height: 100%;
-    padding: 40px 60px;
+    padding: 20px 48px 0;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    /* NOTE: no justify-content:center here — causes top-clip bug when overflow */
     animation: fadeIn 0.4s ease;
     overflow-y: auto;
+    overflow-x: hidden;
+    scroll-padding-top: 20px;
   }
 
   .slide.active { display: flex; }
@@ -237,6 +239,14 @@
     width: 100%;
     max-width: 900px;
     position: relative;
+    box-sizing: border-box;
+    white-space: pre;
+    word-break: normal;
+  }
+
+  .card pre {
+    max-width: 100%;
+    font-size: 11.5px;
   }
 
   .kw  { color: var(--purple); }
@@ -417,7 +427,7 @@
   /* ── TABLE ── */
   .ctf-table {
     width: 100%;
-    max-width: 900px;
+    min-width: 600px;
     border-collapse: collapse;
     font-size: 13px;
   }
@@ -468,8 +478,45 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    gap: 20px;
-    padding-bottom: 80px;
+    gap: 18px;
+    padding-top: 24px;
+    padding-bottom: 96px;   /* clear the fixed nav bar */
+    min-height: 100%;       /* enables flex centering without top-clip */
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  /* ── TABLE SCROLL WRAPPER ── */
+  .table-scroll {
+    width: 100%;
+    max-width: 960px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .slide { padding: 16px 20px 0; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    pre  { font-size: 11px; }
+    .ctf-table { font-size: 11px; min-width: 600px; }
+    .ctf-table th, .ctf-table td { padding: 8px 10px; }
+    .step-list li { font-size: 13px; }
+    .slide-title { font-size: clamp(16px,3vw,28px) !important; }
+    .quote { font-size: 15px; }
+  }
+
+  @media (max-width: 540px) {
+    .slide { padding: 12px 12px 0; }
+    .grid-4 { grid-template-columns: 1fr; }
+    .card { padding: 14px 12px; }
+    .card h3 { font-size: 11px; }
+    .card p, .card li { font-size: 12px; }
+    #nav { gap: 8px; padding: 8px 14px; }
+    #nav button { padding: 5px 12px; font-size: 10px; }
   }
 
   /* ── NEON HEADING ── */
@@ -1185,6 +1232,7 @@
     <div class="section-tag" style="color:var(--green);background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.2);">TOOLS</div>
     <div class="slide-title neon-green" style="font-size:clamp(18px,3vw,36px);">Essential CTF Tools</div>
     <div class="divider"></div>
+    <div class="table-scroll">
     <table class="ctf-table">
       <thead>
         <tr>
@@ -1209,6 +1257,7 @@
         <tr><td>CyberChef</td><td><span class="badge badge-green">General</span></td><td>Encode/decode/crypto/format conversion</td><td>gchq.github.io/CyberChef</td></tr>
       </tbody>
     </table>
+    </div>
   </div>
 </div>
 
