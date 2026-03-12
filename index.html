@@ -569,7 +569,7 @@
     <div class="divider"></div>
     <div class="grid-2" style="max-width:900px;">
       <div class="card cyan">
-        <h3 style="color:var(--cyan);">🌐 Web CTF Topics</h3>
+        <h3 style="color:var(--cyan);"> Web CTF Topics</h3>
         <ul style="margin-top:8px;">
           <li>SQL Injection (SQLi)</li>
           <li>Cross-Site Scripting (XSS)</li>
@@ -582,7 +582,7 @@
         </ul>
       </div>
       <div class="card purple">
-        <h3 style="color:var(--purple);">⛓️ Blockchain CTF Topics</h3>
+        <h3 style="color:var(--purple);"> Blockchain CTF Topics</h3>
         <ul style="margin-top:8px;">
           <li>Reentrancy Attacks</li>
           <li>Integer Overflow / Underflow</li>
@@ -744,8 +744,6 @@
 <span class="cm">-- Resulting query (vulnerable)</span>
 <span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> <span class="fn">users</span> <span class="kw">WHERE</span> user=<span class="str">'admin'</span><span class="cm">--'</span> <span class="kw">AND</span> pass=<span class="str">'anything'</span>
 
-<span class="cm">-- Union-based data extraction</span>
-<span class="var">id=</span><span class="num">1</span> <span class="kw">UNION SELECT</span> <span class="num">null</span>,<span class="fn">group_concat</span>(table_name),<span class="num">null</span> <span class="kw">FROM</span> information_schema.tables--
 </pre>
   </div>
 </div>
